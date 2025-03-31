@@ -1,0 +1,30 @@
+.card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.cardDescription {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0.5rem 0 0;
+}
+
+.cardContent {
+  padding: 1.5rem;
+}
+

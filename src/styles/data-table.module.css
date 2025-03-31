@@ -1,0 +1,97 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #666;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  user-select: none;
+}
+
+.thContent {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  font-size: 0.875rem;
+}
+
+.tr:hover {
+  background-color: #f9f9f9;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.linkIcon {
+  opacity: 0.7;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.statusComplete {
+  background-color: #ecfdf5;
+  color: #047857;
+}
+
+.statusPartial {
+  background-color: #fffbeb;
+  color: #b45309;
+}
+
+.statusFailed {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.actionButtonWrapper {
+  display: inline-flex;
+}
+
+.actionButton {
+  height: 2rem;
+  width: 2rem;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+

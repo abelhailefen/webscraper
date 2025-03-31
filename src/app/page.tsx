@@ -1,95 +1,76 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
+import { Search, Filter, BarChart2, Download, RefreshCw } from "lucide-react";
+import DataTable from "../components/data-table";
+import StatsCards from "../components/stats-cards";
+import { Button } from "../components/ui/button";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [scrapedData, setScrapedData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  // Fetch data from API
+  const fetchScrapedData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/scrape-news");
+      const data = await response.json();
+      setScrapedData(data.articles || []);
+    } catch (error) {
+      console.error("Error fetching scraped data:", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchScrapedData(); // Fetch data on page load
+  }, []);
+
+  const stats = [
+    { title: "Total Articles", value: scrapedData.length.toString(), change: "+12%", icon: <BarChart2 className={styles.statsIcon} /> },
+    { title: "Successful Scrapes", value: scrapedData.length.toString(), change: "+5%", icon: <BarChart2 className={styles.statsIcon} /> },
+    { title: "Failed Scrapes", value: "N/A", change: "-2%", icon: <BarChart2 className={styles.statsIcon} /> },
+    { title: "Data Points", value: "N/A", change: "+18%", icon: <BarChart2 className={styles.statsIcon} /> },
+  ];
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <div>
+            <h1 className={styles.title}>Web Scraper Dashboard</h1>
+            <p className={styles.description}>Monitor and manage your web scraping operations</p>
+          </div>
+          <div className={styles.actions}>
+            <Button className={styles.actionButton} onClick={fetchScrapedData} disabled={loading}>
+              <RefreshCw size={16} className={styles.buttonIcon} />
+              {loading ? "Scraping..." : "Run New Scrape"}
+            </Button>
+            <Button variant="outline" className={styles.actionButton}>
+              <Download size={16} className={styles.buttonIcon} />
+              Export Data
+            </Button>
+          </div>
+        </header>
+
+        <StatsCards stats={stats} />
+
+        <div className={styles.controls}>
+          <div className={styles.searchContainer}>
+            <Search className={styles.searchIcon} />
+            <input type="text" placeholder="Search scraped data..." className={styles.searchInput} />
+          </div>
+          <Button variant="outline" className={styles.filterButton}>
+            <Filter size={16} className={styles.buttonIcon} />
+            Filters
+          </Button>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Display Data Table */}
+        <DataTable data={scrapedData} />
+      </div>
+    </main>
   );
 }
