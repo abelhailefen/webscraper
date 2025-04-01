@@ -55,7 +55,26 @@ export async function GET(req: Request) {
       }
     });
 
-  
+    // Scrape Al Jazeera
+    const alJazeeraResponse = await axios.get("https://www.aljazeera.com/news/", {
+      headers: { "User-Agent": "Mozilla/5.0", "Accept-Language": "en-US,en;q=0.9" },
+    });
+    console.log("Al Jazeera Response Received");
+    const $alJazeera = cheerio.load(alJazeeraResponse.data);
+
+    
+    $alJazeera('h3.gc__title a').each((i, element) => {
+      const title = $alJazeera(element).text().trim();
+      const url = $alJazeera(element).attr('href');
+
+      if (title && url) {
+        articles.push({
+          title,
+          url: url.startsWith("http") ? url : `https://www.aljazeera.com${url}`,
+          source: "Al Jazeera",
+        });
+      }
+    });
 
     // Handle CSV export
     if (format === "csv") {
