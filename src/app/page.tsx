@@ -28,11 +28,17 @@ export default function Home() {
     fetchScrapedData(); // Fetch data on page load
   }, []);
 
+  //  Calculate Stats Dynamically
+  const totalArticles = scrapedData.length;
+  const successfulScrapes = scrapedData.filter(article => article.title && article.url).length;
+  const failedScrapes = totalArticles - successfulScrapes;
+  const dataPoints = totalArticles * 3; // Assuming each article has title, URL, and source
+
   const stats = [
-    { title: "Total Articles", value: scrapedData.length.toString(), change: "+12%", icon: <BarChart2 className={styles.statsIcon} /> },
-    { title: "Successful Scrapes", value: scrapedData.length.toString(), change: "+5%", icon: <BarChart2 className={styles.statsIcon} /> },
-    { title: "Failed Scrapes", value: "N/A", change: "-2%", icon: <BarChart2 className={styles.statsIcon} /> },
-    { title: "Data Points", value: "N/A", change: "+18%", icon: <BarChart2 className={styles.statsIcon} /> },
+    { title: "Total Articles", value: totalArticles.toString(), change: "+12%", icon: <BarChart2 className={styles.statsIcon} /> },
+    { title: "Successful Scrapes", value: successfulScrapes.toString(), change: "+5%", icon: <BarChart2 className={styles.statsIcon} /> },
+    { title: "Failed Scrapes", value: failedScrapes.toString(), change: "-2%", icon: <BarChart2 className={styles.statsIcon} /> },
+    { title: "Data Points", value: dataPoints.toString(), change: "+18%", icon: <BarChart2 className={styles.statsIcon} /> },
   ];
 
   return (
@@ -49,10 +55,9 @@ export default function Home() {
               {loading ? "Scraping..." : "Run New Scrape"}
             </Button>
             <Button variant="outline" className={styles.actionButton} onClick={() => window.location.href = "/api/scrape-news?format=csv"}>
-  <Download size={16} className={styles.buttonIcon} />
-  Export Data
-</Button>
-
+              <Download size={16} className={styles.buttonIcon} />
+              Export Data
+            </Button>
           </div>
         </header>
 

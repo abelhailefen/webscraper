@@ -55,7 +55,7 @@ export async function GET(req: Request) {
       }
     });
 
-    console.log("Scraped Articles:", articles);
+  
 
     // Handle CSV export
     if (format === "csv") {
