@@ -1,24 +1,24 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 import * as cheerio from "cheerio";
+import { Parser } from "json2csv";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const format = searchParams.get("format"); // Check if "format=csv" is requested
+
   try {
     console.log("Fetching news...");
-    
+
     // Scrape BBC
     const bbcResponse = await axios.get("https://www.bbc.com/news", {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-        "Accept-Language": "en-US,en;q=0.9",
-      },
+      headers: { "User-Agent": "Mozilla/5.0", "Accept-Language": "en-US,en;q=0.9" },
     });
     console.log("BBC Response Received");
 
     const $bbc = cheerio.load(bbcResponse.data);
     const articles: any[] = [];
 
-    // Scrape BBC headlines
     $bbc('h2[data-testid="card-headline"], h2[data-editable="title"]').each((i, element) => {
       const title = $bbc(element).text().trim();
       const parentLink = $bbc(element).closest("a");
@@ -35,10 +35,7 @@ export async function GET() {
 
     // Scrape CNN
     const cnnResponse = await axios.get("https://edition.cnn.com/world", {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-        "Accept-Language": "en-US,en;q=0.9",
-      },
+      headers: { "User-Agent": "Mozilla/5.0", "Accept-Language": "en-US,en;q=0.9" },
     });
     console.log("CNN Response Received");
 
@@ -59,6 +56,20 @@ export async function GET() {
     });
 
     console.log("Scraped Articles:", articles);
+
+    // Handle CSV export
+    if (format === "csv") {
+      const fields = ["title", "url", "source"];
+      const json2csv = new Parser({ fields });
+      const csv = json2csv.parse(articles);
+
+      return new Response(csv, {
+        headers: {
+          "Content-Type": "text/csv",
+          "Content-Disposition": "attachment; filename=scraped-news.csv",
+        },
+      });
+    }
 
     return NextResponse.json({ articles });
   } catch (error) {

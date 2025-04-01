@@ -48,10 +48,11 @@ export default function Home() {
               <RefreshCw size={16} className={styles.buttonIcon} />
               {loading ? "Scraping..." : "Run New Scrape"}
             </Button>
-            <Button variant="outline" className={styles.actionButton}>
-              <Download size={16} className={styles.buttonIcon} />
-              Export Data
-            </Button>
+            <Button variant="outline" className={styles.actionButton} onClick={() => window.location.href = "/api/scrape-news?format=csv"}>
+  <Download size={16} className={styles.buttonIcon} />
+  Export Data
+</Button>
+
           </div>
         </header>
 
